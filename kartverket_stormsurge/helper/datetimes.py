@@ -4,6 +4,7 @@ import pytz
 from kartverket_stormsurge.helper.raise_assert import ras
 
 def assert_is_utc_datetime(date_in):
+    """Assert that date_in is an UTC datetime."""
     ras(isinstance(date_in, datetime.datetime))
 
     if not date_in.tzinfo == pytz.utc:
@@ -11,6 +12,9 @@ def assert_is_utc_datetime(date_in):
 
 
 def assert_10min_multiple(date_in):
+    """Assert that date_in is a datetime that is a
+    multiple of 10 minutes.
+    """
     ras(isinstance(date_in, datetime.datetime))
     ras(date_in.second == 0)
     ras((date_in.minute % 10) == 0)
@@ -18,6 +22,8 @@ def assert_10min_multiple(date_in):
 
 
 def datetime_range(datetime_start, datetime_end, step_timedelta):
+    """Yield a datetime range, in the range [datetime_start; datetime_end[,
+    with step step_timedelta."""
     assert_is_utc_datetime(datetime_start)
     assert_is_utc_datetime(datetime_end)
     ras(isinstance(step_timedelta, datetime.timedelta))
@@ -36,6 +42,9 @@ def datetime_range(datetime_start, datetime_end, step_timedelta):
 
 
 def datetime_segments(datetime_start, datetime_end, step_timedelta):
+    """Generate a succession of segments, that cover [datetime_start; datetime_end].
+    The segments will have length step_timedelta, except possibly the last segment
+    that may be shorter."""
     assert_is_utc_datetime(datetime_start)
     assert_is_utc_datetime(datetime_end)
     ras(isinstance(step_timedelta, datetime.timedelta))
