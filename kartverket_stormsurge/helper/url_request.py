@@ -118,7 +118,7 @@ class NicedUrlRequest():
 
                 return(self.cache_folder + path_within_cache + request.replace("/", ""))
 
-    def perform_request(self, request, ignore_cache=False, allow_caching=True, max_retries=10):
+    def perform_request(self, request, ignore_cache=False, allow_caching=True, max_retries=60):
         """Perform the request request, after checking if the data are available in cache,
         and making sure we are not too hard on the server.
 
