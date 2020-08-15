@@ -39,8 +39,8 @@ from kartverket_stormsurge.dataset_accessor import DatasetAccessor
 
 
 def test_full_workflow_1():
-    datetime_start_data = datetime.datetime(2008, 12, 15, 9, 00, 00, pytz.utc)
-    datetime_end_data = datetime.datetime(2008, 12, 28, 9, 00, 00, pytz.utc)
+    datetime_start_data = datetime.datetime(2008, 12, 15, 9, 0, 0, 0, pytz.utc)
+    datetime_end_data = datetime.datetime(2008, 12, 28, 9, 0, 0, 0, pytz.utc)
     nc4_path = "./full_workflow_test.nc4"
 
     with tempfile.TemporaryDirectory() as tmpdirname:
@@ -49,8 +49,8 @@ def test_full_workflow_1():
 
         dataset_accessor = DatasetAccessor(path_to_NetCDF=nc4_path)
 
-        datetime_start_data_test = datetime.datetime(2008, 12, 15, 9, 00, 00)
-        datetime_end_data_test = datetime.datetime(2008, 12, 15, 10, 00, 00)
+        datetime_start_data_test = datetime.datetime(2008, 12, 15, 9, 0, 0, 0, pytz.utv)
+        datetime_end_data_test = datetime.datetime(2008, 12, 15, 10, 0, 0, 0, pytz.utv)
         station_id = "OSL"
 
         data_timestamp, data_observation, data_prediction =\
