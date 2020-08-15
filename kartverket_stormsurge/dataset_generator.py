@@ -233,7 +233,7 @@ class DatasetGenerator():
 
             # TODO: add more metadata details
 
-            timestamps[:] = timestamps_vector
+            timestamps[:] = np.array(timestamps_vector)
 
             for ind, crrt_station_id in tqdm(enumerate(list_station_ids),
                                              desc="station", total=len(list_station_ids)):

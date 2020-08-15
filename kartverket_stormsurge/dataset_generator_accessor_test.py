@@ -39,7 +39,7 @@ from kartverket_stormsurge.dataset_accessor import DatasetAccessor
 
 
 def test_full_workflow_1():
-    datetime_start_data = datetime.datetime(2008, 12, 15, 9, 0, 0, 0, pytz.utc)
+    datetime_start_data = datetime.datetime(2008, 12, 14, 9, 0, 0, 0, pytz.utc)
     datetime_end_data = datetime.datetime(2008, 12, 28, 9, 0, 0, 0, pytz.utc)
     nc4_path = "./full_workflow_test.nc4"
 
@@ -49,8 +49,8 @@ def test_full_workflow_1():
 
         dataset_accessor = DatasetAccessor(path_to_NetCDF=nc4_path)
 
-        datetime_start_data_test = datetime.datetime(2008, 12, 15, 9, 0, 0, 0, pytz.utv)
-        datetime_end_data_test = datetime.datetime(2008, 12, 15, 10, 0, 0, 0, pytz.utv)
+        datetime_start_data_test = datetime.datetime(2008, 12, 15, 9, 0, 0, 0, pytz.utc)
+        datetime_end_data_test = datetime.datetime(2008, 12, 15, 10, 10, 0, 0, pytz.utc)
         station_id = "OSL"
 
         data_timestamp, data_observation, data_prediction =\
@@ -58,21 +58,24 @@ def test_full_workflow_1():
                                       datetime_start_data_test,
                                       datetime_end_data_test)
 
-        correct_datetime_timestamps = [datetime.datetime(2008, 12, 15, 9, 0),
-                                       datetime.datetime(2008, 12, 15, 9, 10),
-                                       datetime.datetime(2008, 12, 15, 9, 20),
-                                       datetime.datetime(2008, 12, 15, 9, 30),
-                                       datetime.datetime(2008, 12, 15, 9, 40),
-                                       datetime.datetime(2008, 12, 15, 9, 50),
-                                       datetime.datetime(2008, 12, 15, 10, 0)]
+        correct_datetime_timestamps = [datetime.datetime(2008, 12, 15, 9, 0, 0, 0, pytz.utc),
+                                       datetime.datetime(2008, 12, 15, 9, 10, 0, 0, pytz.utc),
+                                       datetime.datetime(2008, 12, 15, 9, 20, 0, 0, pytz.utc),
+                                       datetime.datetime(2008, 12, 15, 9, 30, 0, 0, pytz.utc),
+                                       datetime.datetime(2008, 12, 15, 9, 40, 0, 0, pytz.utc),
+                                       datetime.datetime(2008, 12, 15, 9, 50, 0, 0, pytz.utc),
+                                       datetime.datetime(2008, 12, 15, 10, 0, 0, 0, pytz.utc)]
 
         correct_observation = [27.3, 26.4, 25.6, 25. , 24.6, 24.2, 23.8]
         correct_prediction = [56.1, 54.8, 53.6, 52.7, 51.9, 51.2, 50.6]
 
-        assert correct_datetime_timestamps == datetime_timestamps
-        assert np.allclose(np.array(correct_observation), observation)
-        assert np.allclose(np.array(correct_prediction), prediction)       
-        
+        print(correct_datetime_timestamps)
+        print(data_timestamp)
+        assert correct_datetime_timestamps == data_timestamp
+        assert np.allclose(np.array(correct_observation), data_observation)
+        assert np.allclose(np.array(correct_prediction), data_prediction)
+
+        # TODO: add one more test with another station and time in second half
 
     if os.path.exists(nc4_path):
         os.remove(nc4_path)

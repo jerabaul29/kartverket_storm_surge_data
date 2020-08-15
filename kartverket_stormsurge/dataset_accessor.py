@@ -1,4 +1,5 @@
 import os
+import pytz
 
 import datetime
 
@@ -42,8 +43,8 @@ class DatasetAccessor():
                 crrt_station_id = nc4_fh["stationid"][crrt_ind]
                 crrt_lat = nc4_fh["latitude"][crrt_ind]
                 crrt_lon = nc4_fh["longitude"][crrt_ind]
-                datetime_start = datetime.datetime.fromtimestamp((nc4_fh["timestamp_start"][crrt_ind].data))
-                datetime_end = datetime.datetime.fromtimestamp((nc4_fh["timestamp_end"][crrt_ind].data))
+                datetime_start = datetime.datetime.fromtimestamp(nc4_fh["timestamp_start"][crrt_ind].data, pytz.utc)
+                datetime_end = datetime.datetime.fromtimestamp(nc4_fh["timestamp_end"][crrt_ind].data, pytz.utc)
 
                 crrt_dict_metadata = {}
                 crrt_dict_metadata["station_index"] = crrt_ind
@@ -166,7 +167,7 @@ class DatasetAccessor():
         """
 
         timestamps, observation, prediction = self.get_data(station_id, datetime_start, datetime_end)
-        datetime_timestamps = [datetime.datetime.fromtimestamp(crrt_datetime) for crrt_datetime in timestamps]
+        datetime_timestamps = [datetime.datetime.fromtimestamp(crrt_datetime, pytz.utc) for crrt_datetime in timestamps]
 
         plt.figure()
 
@@ -192,9 +193,9 @@ class DatasetAccessor():
         ras(station_id in self.station_ids)
         assert_is_utc_datetime(datetime_start)
         assert_is_utc_datetime(datetime_end)
-        ras(datetime_start < datetime_end)
-        ras(datetime_start > datetime.datetime.fromtimestamp(self.first_timestamp))
-        ras(datetime_end < datetime.datetime.fromtimestamp(self.last_timestamp))
+        ras(datetime_start <= datetime_end)
+        ras(datetime_start < datetime.datetime.fromtimestamp(self.last_timestamp, pytz.utc))
+        ras(datetime_end > datetime.datetime.fromtimestamp(self.first_timestamp, pytz.utc))
 
         nc4_index = self.dict_metadata[station_id]["station_index"]
 
@@ -209,7 +210,8 @@ class DatasetAccessor():
         first_index = find_index_first_greater_or_equal(data_timestamp_full, timestamp_start)
         last_index = find_index_first_greater_or_equal(data_timestamp_full, timestamp_end) + 1
 
-        data_timestamp = data_timestamp_full[first_index:last_index]
+        data_timestamp = [datetime.datetime.fromtimestamp(crrt_timestamp, pytz.utc) for
+                          crrt_timestamp in data_timestamp_full[first_index:last_index]]
         data_observation = data_observation_full[first_index:last_index]
         data_prediction = data_prediction_full[first_index:last_index]
 
