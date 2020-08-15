@@ -4,6 +4,7 @@
 # TODO: add class to wrap netCDF and access it
 
 import logging
+import math
 
 import netCDF4 as nc4
 
@@ -110,7 +111,10 @@ class DatasetGenerator():
         station_start = dict_bounds_station["first"]
         station_end = dict_bounds_station["last"]
 
+        expect_result = False
+
         if self.check_time_segment_within_bounds(start, end, station_start, station_end):
+            expect_result = True
             strftime_format = "%Y-%m-%dT%H:%M:%S"
             utc_time_start = start.strftime(strftime_format)
             utc_time_end = end.strftime(strftime_format)
@@ -162,7 +166,8 @@ class DatasetGenerator():
 
         for crrt_expected_key in expected_keys:
             if crrt_expected_key not in obtained_keys:
-                logging.warning("missing expected key {}".format(crrt_expected_key))
+                if expect_result:
+                    logging.warning("missing expected key {}".format(crrt_expected_key))
                 dict_segment[crrt_expected_key] = {}
 
         complete_dict_segment = {}
@@ -181,16 +186,17 @@ class DatasetGenerator():
                                  nc4_path="./data_kartverket_storm_surge.nc4"):
         assert_is_utc_datetime(datetime_start)
         assert_is_utc_datetime(datetime_end)
-        ras(isinstance(list_station_ids, list))
 
         dict_station_data = self.get_stations_information()
-        list_available_station_ids = list(dict_station_data.keys())
+        list_available_station_ids = sorted(list(dict_station_data.keys()))
 
         if list_station_ids is None:
             list_station_ids = list_available_station_ids
         else:
             for crrt_station in list_station_ids:
                 ras(crrt_station in list_available_station_ids)
+
+        ras(isinstance(list_station_ids, list))
 
         timestamps_vector = [crrt_datetime.timestamp() for
                              crrt_datetime in datetime_range(datetime_start,
@@ -229,7 +235,8 @@ class DatasetGenerator():
 
             timestamps[:] = timestamps_vector
 
-            for ind, crrt_station_id in tqdm(enumerate(list_station_ids), desc="station", position=0, leave=True):
+            for ind, crrt_station_id in tqdm(enumerate(list_station_ids),
+                                             desc="station", total=len(list_station_ids)):
                 stationid[ind] = crrt_station_id
                 latitude[ind] = dict_station_data[crrt_station_id]["latitude"]
                 longitude[ind] = dict_station_data[crrt_station_id]["longitude"]
@@ -242,12 +249,13 @@ class DatasetGenerator():
                 np_predictions = -self.fill_value * np.ones((number_of_time_entries,))
 
                 crrt_filling_index = 0
+                approx_nbr_segments = math.ceil((datetime_end - datetime_start) / self.segment_duration)
 
                 for crrt_segment in tqdm(datetime_segments(datetime_start,
                                                            datetime_end,
                                                            self.segment_duration
                                                            ),
-                                         desc="segment", position=0, leave=True
+                                         desc="segment", total=approx_nbr_segments
                                          ):
 
                     dict_crrt_segment =\
