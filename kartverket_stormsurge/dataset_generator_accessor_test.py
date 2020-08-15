@@ -50,7 +50,7 @@ def test_full_workflow_1():
         dataset_accessor = DatasetAccessor(path_to_NetCDF=nc4_path)
 
         datetime_start_data_test = datetime.datetime(2008, 12, 15, 9, 0, 0, 0, pytz.utc)
-        datetime_end_data_test = datetime.datetime(2008, 12, 15, 10, 10, 0, 0, pytz.utc)
+        datetime_end_data_test = datetime.datetime(2008, 12, 15, 10, 0, 0, 0, pytz.utc)
         station_id = "OSL"
 
         data_timestamp, data_observation, data_prediction =\
