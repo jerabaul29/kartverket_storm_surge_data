@@ -10,6 +10,13 @@ def assert_is_utc_datetime(date_in):
         raise Exception("not utc!")
 
 
+def assert_10min_multiple(date_in):
+    ras(isinstance(date_in, datetime.datetime))
+    ras(date_in.second == 0)
+    ras((date_in.minute % 10) == 0)
+    ras(date_in.microsecond == 0)
+
+
 def datetime_range(datetime_start, datetime_end, step_timedelta):
     assert_is_utc_datetime(datetime_start)
     assert_is_utc_datetime(datetime_end)

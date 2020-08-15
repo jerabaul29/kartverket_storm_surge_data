@@ -5,19 +5,23 @@
 
 import logging
 
-import numpy as np
-
 import netCDF4 as nc4
 
 import datetime
+import dateutil.parser
 import pytz
+
+import numpy as np
+
+from tqdm import tqdm
 
 import bs4
 from bs4 import BeautifulSoup as bfls
 
 from kartverket_stormsurge.helper.url_request import NicedUrlRequest
 from kartverket_stormsurge.helper.raise_assert import ras
-from kartverket_stormsurge.helper.datetimes import assert_is_utc_datetime, datetime_range, datetime_segments
+from kartverket_stormsurge.helper.datetimes import assert_is_utc_datetime, datetime_range, datetime_segments, \
+    assert_10min_multiple
 
 
 def cache_organizer(request):
@@ -51,6 +55,7 @@ class DatasetGenerator():
                                              cache_organizer=cache_organizer)
 
         self.resolution_timedelta = datetime.timedelta(minutes=10)
+        self.segment_duration = datetime.timedelta(days=5)
         self.fill_value = 1.0e37
 
     def get_stations_information(self):
@@ -83,25 +88,29 @@ class DatasetGenerator():
 
         for crrt_time in ["first", "last"]:
             crrt_time_str = soup.select("obstime")[0][crrt_time]
-            crrt_datetime = datetime.datetime.fromisoformat(crrt_time_str).astimezone(pytz.utc)
+            crrt_datetime = dateutil.parser.isoparse(crrt_time_str).astimezone(pytz.utc)
             dict_timebounds[crrt_time] = crrt_datetime
 
         return(dict_timebounds)
 
     def get_individual_station_data_between_datetimes(self, station_id, start, end):
-        # TODO: end should not be included
-
         assert_is_utc_datetime(start)
         assert_is_utc_datetime(end)
-        # TODO: assert times are multiple of 10 minutes
 
-        # TODO: generate list of times that are expected to be present
+        assert_10min_multiple(start)
+        assert_10min_multiple(end)
+
+        expected_datetimes = datetime_range(start, end, self.resolution_timedelta)
 
         expected_keys = ["prediction_cm_CD", "observation_cm_CD"]
 
         dict_segment = {}
 
-        if True:  # TODO: only perform request if ok
+        dict_bounds_station = self.get_individual_station_time_bounds(station_id)
+        station_start = dict_bounds_station["first"]
+        station_end = dict_bounds_station["last"]
+
+        if self.check_time_segment_within_bounds(start, end, station_start, station_end):
             strftime_format = "%Y-%m-%dT%H:%M:%S"
             utc_time_start = start.strftime(strftime_format)
             utc_time_end = end.strftime(strftime_format)
@@ -141,7 +150,7 @@ class DatasetGenerator():
                     if type(crrt_entry) is bs4.element.Tag:
                         time = crrt_entry["time"]
                         crrt_value = float(crrt_entry["value"])
-                        crrt_datetime = datetime.datetime.fromisoformat(time)
+                        crrt_datetime = dateutil.parser.isoparse(time).astimezone(pytz.utc)
                         dict_segment[crrt_key][crrt_datetime] = crrt_value
 
         obtained_keys = list(dict_segment.keys())
@@ -156,11 +165,17 @@ class DatasetGenerator():
                 logging.warning("missing expected key {}".format(crrt_expected_key))
                 dict_segment[crrt_expected_key] = {}
 
-        # TODO: make sure all entries in the range are here
+        complete_dict_segment = {}
 
-        # at this stage, have a dict segment fully completed, with either data or fill values
+        for crrt_time in expected_datetimes:
+            complete_dict_segment[crrt_time] = {}
+            for crrt_dataset in expected_keys:
+                if crrt_time in dict_segment[crrt_dataset]:
+                    complete_dict_segment[crrt_time][crrt_dataset] = dict_segment[crrt_dataset][crrt_time]
+                else:
+                    complete_dict_segment[crrt_time][crrt_dataset] = self.fill_value
 
-        return(dict_segment)
+        return(complete_dict_segment)
 
     def generate_netCDF4_dataset(self, datetime_start, datetime_end, list_station_ids=None,
                                  nc4_path="./data_kartverket_storm_surge.nc4"):
@@ -198,7 +213,7 @@ class DatasetGenerator():
             nc4_fh.institution = "IT department, Norwegian Meteorological Institute"
             nc4_fh.Contact = "jeanr@met.no"
 
-            _ = nc4_fh.createDimension('station', len(self.stations_ids))
+            _ = nc4_fh.createDimension('station', len(list_station_ids))
             _ = nc4_fh.createDimension('time', number_of_time_entries)
 
             stationid = nc4_fh.createVariable("stationid", str, ('station'))
@@ -214,33 +229,43 @@ class DatasetGenerator():
 
             timestamps[:] = timestamps_vector
 
-            for ind, crrt_station_id in enumerate(list_station_ids):
+            for ind, crrt_station_id in tqdm(enumerate(list_station_ids), desc="station", position=0, leave=True):
                 stationid[ind] = crrt_station_id
                 latitude[ind] = dict_station_data[crrt_station_id]["latitude"]
                 longitude[ind] = dict_station_data[crrt_station_id]["longitude"]
 
                 dict_crrt_timebounds = self.get_individual_station_time_bounds(crrt_station_id)
-                timestamp_start[ind] = dict_crrt_timebounds["start"]
-                timestamp_end[ind] = dict_crrt_timebounds["end"]
+                timestamp_start[ind] = dict_crrt_timebounds["first"].timestamp()
+                timestamp_end[ind] = dict_crrt_timebounds["last"].timestamp()
 
-                crrt_time_index = 0
+                np_observations = -self.fill_value * np.ones((number_of_time_entries,))
+                np_predictions = -self.fill_value * np.ones((number_of_time_entries,))
 
-                for crrt_segment in datetime_segments(datetime_start,
-                                                      datetime_end,
-                                                      self.resolution_timedelta
-                                                      ):
+                crrt_filling_index = 0
+
+                for crrt_segment in tqdm(datetime_segments(datetime_start,
+                                                           datetime_end,
+                                                           self.segment_duration
+                                                           ),
+                                         desc="segment", position=0, leave=True
+                                         ):
+
                     dict_crrt_segment =\
                         self.get_individual_station_data_between_datetimes(crrt_station_id,
                                                                            crrt_segment[0],
                                                                            crrt_segment[1])
-                    pass
-                
 
+                    for crrt_time in list(dict_crrt_segment.keys()):
+                        ras(timestamps[crrt_filling_index] == crrt_time.timestamp())
+                        np_observations[crrt_filling_index] = dict_crrt_segment[crrt_time]["observation_cm_CD"]
+                        np_predictions[crrt_filling_index] = dict_crrt_segment[crrt_time]["prediction_cm_CD"]
+                        crrt_filling_index += 1
+
+                observation[ind, :] = np_observations
+                prediction[ind, :] = np_predictions
 
         # populate metadata
-        # for each station: split time into segments, check if should request, fill with available data
         # note: initialize the whole dataset as "invalid"
-        # TODO: assert time is a multiple of 10 mintues
         pass
 
     def check_time_segment_within_bounds(self, segment_start, segment_end, bound_start, bound_end):
