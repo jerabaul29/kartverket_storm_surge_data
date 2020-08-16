@@ -166,15 +166,19 @@ class DatasetAccessor():
             - datetime_end: the end of the plot
         """
 
-        timestamps, observation, prediction = self.get_data(station_id, datetime_start, datetime_end)
-        datetime_timestamps = [datetime.datetime.fromtimestamp(crrt_datetime, pytz.utc) for crrt_datetime in timestamps]
+        datetime_timestamps, observation, prediction = self.get_data(station_id, datetime_start, datetime_end)
 
         plt.figure()
 
-        plt.plot(datetime_timestamps, observation)
-        plt.plot(datetime_timestamps, prediction)
+        plt.plot(datetime_timestamps, observation, label="obs")
+        plt.plot(datetime_timestamps, prediction, label="pred astronomic tide")
 
         plt.ylim([-1000.0, 1000.0])
+        plt.title("{}".format(station_id))
+
+        plt.legend()
+
+        plt.tight_layout()
 
         plt.show()
 
@@ -210,9 +214,9 @@ class DatasetAccessor():
         first_index = find_index_first_greater_or_equal(data_timestamp_full, timestamp_start)
         last_index = find_index_first_greater_or_equal(data_timestamp_full, timestamp_end) + 1
 
-        data_timestamp = [datetime.datetime.fromtimestamp(crrt_timestamp, pytz.utc) for
-                          crrt_timestamp in data_timestamp_full[first_index:last_index]]
+        data_datetime = [datetime.datetime.fromtimestamp(crrt_timestamp, pytz.utc) for
+                         crrt_timestamp in data_timestamp_full[first_index:last_index]]
         data_observation = data_observation_full[first_index:last_index]
         data_prediction = data_prediction_full[first_index:last_index]
 
-        return(data_timestamp, data_observation, data_prediction)
+        return(data_datetime, data_observation, data_prediction)
