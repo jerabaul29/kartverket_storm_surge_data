@@ -68,7 +68,8 @@ class DatasetChecker():
             iso_to_parse = crrt_path[-139:-120]
             print("iso to parse: {}".format(iso_to_parse))
 
-            if len(iso_to_parse) == 19 and iso_to_parse[4] == "-" and iso_to_parse[7] == "-" and iso_to_parse[10] == "T":
+            if len(iso_to_parse) == 19 and iso_to_parse[4] == "-"\
+                    and iso_to_parse[7] == "-" and iso_to_parse[10] == "T":
                 crrt_start_datetime_pathname = dateutil.parser.isoparse(iso_to_parse).astimezone(pytz.utc)
                 logging.info(crrt_start_datetime_pathname)
 
@@ -127,16 +128,16 @@ class DatasetChecker():
                         observation_nc4 = observation[0]
                         prediction_nc4 = prediction[0]
 
-                        logging.info("the netcdf4 datafile provided station {} timestamp {} observation {} prediction {}:"
+                        logging.info("netcdf4 datafile provided station {} timestamp {} observation {} prediction {}:"
                                      .format(crrt_station, datetimes_nc4, observation_nc4, prediction_nc4))
 
                         assert datetimes_nc4 == crrt_datetime
 
                         if "observation" in crrt_key:
-                            logging.info("compare obs {} from request to {} from nc4".format(crrt_data, observation_nc4))
+                            logging.info("obs {} from request; {} from nc4".format(crrt_data, observation_nc4))
                             assert abs(observation_nc4 - crrt_data) < 1e-2
                         elif "prediction" in crrt_key:
-                            logging.info("compare pred {} from request to {} from nc4".format(crrt_data, prediction_nc4))
+                            logging.info("pred {} from request; {} from nc4".format(crrt_data, prediction_nc4))
                             logging.info(prediction_nc4)
                             logging.info(crrt_data)
                             assert abs(prediction_nc4 - crrt_data) < 1e-2
@@ -159,7 +160,7 @@ class DatasetChecker():
                         prediction_nc4 = prediction[0]
 
                         logging.info("this entry is from a missing html message")
-                        logging.info("the netcdf4 datafile provided station {} timestamp {} observation {} prediction {}:"
+                        logging.info("netcdf4 datafile provided station {} timestamp {} observation {} prediction {}:"
                                      .format(crrt_station, datetimes_nc4, observation_nc4, prediction_nc4))
 
                         assert observation_nc4 > 1e8, ("observation: {}".format(observation_nc4))
