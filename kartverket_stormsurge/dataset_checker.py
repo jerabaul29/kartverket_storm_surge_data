@@ -66,7 +66,6 @@ class DatasetChecker():
             crrt_path = "{}/{}".format(crrt_folder, random.choice(list_files))
 
             iso_to_parse = crrt_path[-139:-120]
-            print("iso to parse: {}".format(iso_to_parse))
 
             if len(iso_to_parse) == 19 and iso_to_parse[4] == "-"\
                     and iso_to_parse[7] == "-" and iso_to_parse[10] == "T":

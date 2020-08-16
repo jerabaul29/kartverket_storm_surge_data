@@ -56,7 +56,7 @@ def test_full_workflow_1():
         dataset_checker = DatasetChecker(path_to_ordered_cache=tmpdirname + "/", path_to_netCDF=nc4_path,
                                          limit_datetimes=(datetime_start_data, datetime_end_data))
 
-        dataset_checker.perform_random_tests(n_tests=100)
+        dataset_checker.perform_random_tests(n_tests=1000)
 
         dataset_accessor = DatasetAccessor(path_to_NetCDF=nc4_path)
 
