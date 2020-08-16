@@ -1,8 +1,5 @@
 """Tools for generating a new netCDF4 storm surge dataset."""
 
-# TODO: add random tests on netCDF
-# TODO: add class to wrap netCDF and access it
-
 import logging
 import math
 
