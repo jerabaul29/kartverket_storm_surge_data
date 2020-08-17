@@ -188,9 +188,12 @@ class DatasetAccessor():
         plt.plot(datetime_timestamps, prediction, label="pred astronomic tide")
 
         plt.ylim([-1000.0, 1000.0])
-        plt.title("{}".format(station_id))
+        plt.title("station: {}".format(station_id))
+
+        plt.ylabel("water heigth [cm]")
 
         plt.legend()
+        plt.xticks(rotation=45)
 
         plt.tight_layout()
 

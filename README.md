@@ -25,3 +25,15 @@ Please use the Github issue tracker at ```https://github.com/jerabaul29/kartverk
 ## Notes
 
 This small module was developed in the context of the 'MachineOcean' project, Norwegian Meteorological Institute: ```https://machineocean.met.no/```.
+
+## Example of resuts
+
+The ```script_access_dataset.py``` will typically produce figures (or / and data for any use) from the Kartverket data about:
+
+- station location:
+
+![location](./figs/all_stations_locations.png)
+
+- time extend over which the data are available for each station:
+
+- data dump for any station over the time range spanned by the .nc4 dataset generated:
