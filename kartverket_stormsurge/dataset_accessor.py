@@ -6,6 +6,7 @@ import datetime
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
+import cartopy
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 
@@ -128,11 +129,24 @@ class DatasetAccessor():
         plt.figure(figsize=(15, 18))
         ax = plt.axes(projection=proj)
 
-        ax.add_feature(cfeature.LAND)
-        ax.add_feature(cfeature.LAKES)
-        ax.add_feature(cfeature.RIVERS)
-        ax.set_global()
-        ax.coastlines()
+        resol = '50m'
+        bodr = cartopy.feature.NaturalEarthFeature(category='cultural',
+                                                   name='admin_0_boundary_lines_land',
+                                                   scale=resol, facecolor='none', alpha=0.7)
+        land = cartopy.feature.NaturalEarthFeature('physical', 'land',
+                                                   scale=resol, edgecolor='k', facecolor=cfeature.COLORS['land'])
+        ocean = cartopy.feature.NaturalEarthFeature('physical', 'ocean',
+                                                    scale=resol, edgecolor='none', facecolor=cfeature.COLORS['water'])
+        lakes = cartopy.feature.NaturalEarthFeature('physical', 'lakes',
+                                                    scale=resol, edgecolor='b', facecolor=cfeature.COLORS['water'])
+        rivers = cartopy.feature.NaturalEarthFeature('physical', 'rivers_lake_centerlines',
+                                                     scale=resol, edgecolor='b', facecolor='none')
+
+        ax.add_feature(land, zorder=0)
+        ax.add_feature(ocean, linewidth=0.2, zorder=0)
+        ax.add_feature(lakes, zorder=1)
+        ax.add_feature(rivers, linewidth=0.5, zorder=1)
+        ax.add_feature(bodr, linestyle='--', edgecolor='k', alpha=1, zorder=2)
 
         list_lats = []
         list_lons = []
@@ -143,7 +157,7 @@ class DatasetAccessor():
             list_lons.append(self.dict_metadata[crrt_station_id]["longitude"])
             list_names.append(crrt_station_id)
 
-        ax.scatter(list_lons, list_lats, transform=ccrs.PlateCarree(), color="red")
+        ax.scatter(list_lons, list_lats, transform=ccrs.PlateCarree(), color="red", zorder=3)
 
         transform = ccrs.PlateCarree()._as_mpl_transform(ax)
         for crrt_station_index in range(self.number_of_stations):
