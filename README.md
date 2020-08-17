@@ -1,6 +1,6 @@
 # kartverket_storm_surge_data
 
-Interact with storm surge data from the kartverket API. This implements a simple interaction to the Kartverket API, as it is described in the ```tideapi_protocol.pdf```. All data generated through this module are directly provided by Kartverket. Their license is available at: ```https://www.kartverket.no/data/lisens/```.
+Interact with storm surge data from the kartverket API. This implements a simple interaction to the Kartverket API, as it is described in the ```tideapi_protocol.pdf```. All data generated through this module are directly provided by Kartverket. Their license is available at: ```https://www.kartverket.no/data/lisens/```. For more information about the specific Open tidal and water level data from Kartverket, see: ```https://www.kartverket.no/en/sehavniva/api-for-water-level-data-and-widget/```. We gratefully thank Kartverket for making these data freely available.
 
 ## Installation
 
