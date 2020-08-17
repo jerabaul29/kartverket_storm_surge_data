@@ -23,8 +23,8 @@ elif example_kind == "short":
 else:
     raise ValueError("unknown example_kind")
 
-datetime_checker = DatasetChecker(path_to_ordered_cache="/home/jrlab/.NicedUrlRequest/cache/",
-                                  path_to_netCDF=path_to_nc4,
-                                  limit_datetimes=(start, end))
+dataset_checker = DatasetChecker(path_to_ordered_cache="/home/jrlab/.NicedUrlRequest/cache/",
+                                 path_to_netCDF=path_to_nc4,
+                                 limit_datetimes=(start, end))
 
-datetime_checker.perform_random_tests(10000)
+dataset_checker.perform_random_tests(10000)
