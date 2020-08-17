@@ -213,7 +213,7 @@ class DatasetGenerator():
             nc4_fh.Conventions = "CF-X.X"
             nc4_fh.title = "storm surge from kartverket API"
             nc4_fh.description = description_string
-            nc4_fh.institution = "IT department, Norwegian Meteorological Institute"
+            nc4_fh.institution = "IT department, Norwegian Meteorological Institute, using data from Kartverket"
             nc4_fh.Contact = "jeanr@met.no"
 
             _ = nc4_fh.createDimension('station', len(list_station_ids))
@@ -228,7 +228,32 @@ class DatasetGenerator():
             timestamp_start = nc4_fh.createVariable('timestamp_start', 'i8', ('station'))
             timestamp_end = nc4_fh.createVariable('timestamp_end', 'i8', ('station'))
 
-            # TODO: add more metadata details
+            stationid.description = "unique ID string of each station"
+            stationid.units = "none, 3 capital letters"
+
+            latitude.description = "latitude of each station"
+            latitude.units = "degree North"
+
+            longitude.description = "longitude of each station"
+            longitude.units = "degree East"
+
+            timestamps.description = "common time base for all data"
+            timestamps.units = "POSIX timestamp"
+
+            observation.description = "water level observation at each station over the time base"
+            observation.units = "cm, fill value: 1.0e37"
+
+            prediction.description = "water level prediction by Kartverket," +\
+                "using only astronomic tide effects, at each station over the time base"
+            prediction.units = "cm, fill value: 1.0e37"
+
+            timestamp_start.description = "first timestamp for which data are available," +\
+                "for each station; there may be holes though"
+            timestamp_start.units = "POSIX timestamp"
+
+            timestamp_end.description = "last timestamp for which data are available," +\
+                "for each station; there may be holes though"
+            timestamp_end.units = "POSIX timestamp"
 
             timestamps[:] = np.array(timestamps_vector)
 
