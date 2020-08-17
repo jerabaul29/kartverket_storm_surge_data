@@ -8,6 +8,15 @@ To install: add to your pythonpath. For example on my machine, this folder is at
 
 - ```export PYTHONPATH="${PYTHONPATH}:/home/jrmet/Desktop/Git/kartverket_storm_surge_data"```
 
+You will need a few packages installed locally on your machine to be able to use the code:
+
+- ```numpy```
+- ```matplotlib```
+- ```netCDF4```
+- ```tqdm```
+- ```bs4```
+- ```cartopy```
+
 ## Description
 
 The code in the module implements a simple interaction with Kartvekets web API, following the specification in the ```tideapi_protocol.pdf```. The code makes sure that we are 'nice' to the API, by limiting request rate to max 1 request / second, limiting the size of each individual request, and caching data for later use. Building the full dataset on the period 1970-2020 can take up to a couple of days as a consequence. Once the dataset has been built and dumped as .nc4, data access is of course very quick. When building the dataset, up to typically 5 GB of http request data are cached. The final .nc4 file containing all data in binary format is about 500MB in size.

@@ -31,4 +31,6 @@ print("got {} by requesting data from OSL between {} and {}".format(data_out, st
 dataset_accessor.visualize_single_station("BGO", start, start + datetime.timedelta(days=14.0))
 
 dataset_accessor.visualize_available_times()
+
+print("NOTE: getting coastline and rivers may take a few seconds, be patient...")
 dataset_accessor.visualize_station_positions()
