@@ -36,4 +36,8 @@ The ```script_access_dataset.py``` will typically produce figures (or / and data
 
 - time extend over which the data are available for each station:
 
+![time span](./figs/all_stations_time_extent.png)
+
 - data dump for any station over the time range spanned by the .nc4 dataset generated:
+
+![example data](./figs/data_from_nc4_dump.png)
