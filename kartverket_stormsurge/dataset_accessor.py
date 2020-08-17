@@ -184,7 +184,7 @@ class DatasetAccessor():
 
     def get_data(self, station_id, datetime_start, datetime_end):
         """Get the data contained in the netcdf4 dump about stations_id, that
-        is between times datetime_start and datetime_end.
+        is between times datetime_start and datetime_end (both included).
         Input:
             - sation_id: the station ID, for example 'OSL'
             - datetime_start, datetime_end: the limits of the extracted data.

@@ -27,3 +27,8 @@ dataset_accessor = DatasetAccessor(path_to_NetCDF=path_to_nc4)
 
 data_out = dataset_accessor.get_data("OSL", start, end)
 print("got {} by requesting data from OSL between {} and {}".format(data_out, start, end))
+
+dataset_accessor.visualize_available_times()
+dataset_accessor.visualize_station_positions()
+
+dataset_accessor.visualize_single_station("BGO", start, start + datetime.timedelta(days=3.0))
