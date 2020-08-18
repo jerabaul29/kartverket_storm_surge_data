@@ -52,3 +52,7 @@ The ```script_access_dataset.py``` will typically produce figures (or / and data
 - data dump for any station over the time range spanned by the .nc4 dataset generated:
 
 ![example data](./figs/data_from_nc4_dump.png)
+
+## Useful links
+
+- description of the different water heigth reference levels: https://kartverket.no/sehavniva/data-pa-se-havniva/viktige-vannstandsniva/
