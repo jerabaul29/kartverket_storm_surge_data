@@ -5,8 +5,8 @@ from kartverket_stormsurge.dataset_generator import DatasetGenerator
 
 dataset_generator = DatasetGenerator()
 
-# example_kind = "full"
-example_kind = "short"
+example_kind = "full"
+# example_kind = "short"
 
 if example_kind == "full":
     start = datetime.datetime(1970, 1, 1, 0, 0, tzinfo=pytz.utc)
