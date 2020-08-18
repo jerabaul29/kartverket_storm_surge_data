@@ -4,6 +4,8 @@ Interact with storm surge data from the kartverket API. This implements a simple
 
 ## Installation
 
+The package should be used with Python 3.7 or higher, on Linux platforms. It has been developed and tested on Ubuntu 20.04. Platforms other than Linux may fail to run the package.
+
 To install: add to your pythonpath. For example on my machine, this folder is at location ```/home/jrmet/Desktop/Git/kartverket_storm_surge_data/```, and the command to add to my ```.bashrc``` is:
 
 - ```export PYTHONPATH="${PYTHONPATH}:/home/jrmet/Desktop/Git/kartverket_storm_surge_data"```
