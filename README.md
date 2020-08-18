@@ -16,6 +16,8 @@ You will need a few packages installed locally on your machine to be able to use
 - ```tqdm```
 - ```bs4```
 - ```cartopy```
+ 
+**For internal MET users only**: a data dump is available on lustre, take contact at ```jeanr@met.no```.
 
 ## Description
 
