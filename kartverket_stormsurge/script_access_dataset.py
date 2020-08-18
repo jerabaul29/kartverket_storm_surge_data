@@ -31,12 +31,14 @@ else:
 
 dataset_accessor = DatasetAccessor(path_to_NetCDF=path_to_nc4)
 
-data_out = dataset_accessor.get_data("OSL", start, end)
+data_out = dataset_accessor.get_data("OSL",
+                                     start_obtain_data,
+                                     end_obtain_data)
 print("got {} by requesting data from OSL between {} and {}".format(data_out, start, end))
 
 dataset_accessor.visualize_single_station("BGO",
                                           start_obtain_data,
-                                          end_obtain_data)
+                                          start_obtain_data + datetime.timedelta(days=3.0))
 
 dataset_accessor.visualize_available_times()
 
