@@ -20,6 +20,7 @@ from kartverket_stormsurge.helper.url_request import NicedUrlRequest
 from kartverket_stormsurge.helper.raise_assert import ras
 from kartverket_stormsurge.helper.datetimes import assert_is_utc_datetime, datetime_range, datetime_segments, \
     assert_10min_multiple
+from kartverket_stormsurge.helper.last_thursday_of_the_month import get_last_thursday_in_month
 
 
 def cache_organizer(request):
@@ -40,6 +41,23 @@ def cache_organizer(request):
         return("")
 
 
+def warn_on_maintenance():
+    """Warn if an API request is performed on the last Thursday of the
+    month; this is when server maintenance takes place."""
+
+    behavior = "warn"
+
+    crrt_datetime = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC)
+    last_thursday_of_month = get_last_thursday_in_month(crrt_datetime)
+
+    ras(last_thursday_of_month.year == crrt_datetime.year)
+    ras(last_thursday_of_month.month == crrt_datetime.month)
+
+    if last_thursday_of_month.day == crrt_datetime.day:
+        if behavior == "warn":
+            logging.warning("maintenance of the API server may be happening!")
+
+
 class DatasetGenerator():
     def __init__(self, cache_folder="default"):
         """
@@ -50,7 +68,8 @@ class DatasetGenerator():
         """
 
         self.url_requester = NicedUrlRequest(cache_folder=cache_folder,
-                                             cache_organizer=cache_organizer)
+                                             cache_organizer=cache_organizer,
+                                             request_callback=warn_on_maintenance)
 
         self.resolution_timedelta = datetime.timedelta(minutes=10)
         self.segment_duration = datetime.timedelta(days=5)

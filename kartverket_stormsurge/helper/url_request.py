@@ -16,7 +16,8 @@ class NicedUrlRequest():
     """A simple wrapper to nice url requests.
     Make sure that the caller has to wait for a minimum amount of time between requests."""
 
-    def __init__(self, min_wait_time_s=1, cache_folder="default", cache_organizer=None):
+    def __init__(self, min_wait_time_s=1, cache_folder="default", cache_organizer=None,
+                 request_callback=None):
         """
         - min_wait_time_s: minimum time interval between requests.
         - cache_folder: properties for caching the data. Can be: None (no caching),
@@ -29,6 +30,8 @@ class NicedUrlRequest():
             into the cache_folder, which may result in many files in a single folder.
             For balancing properties, this function should be usercase specific, and
             it is let to the user to implement.
+        - request_callback: a callback function to be called if a url request is performed.
+            By default None (i.e., nothing).
         """
 
         self.min_wait_time_s = min_wait_time_s
@@ -53,6 +56,8 @@ class NicedUrlRequest():
         self.cache_organizer = cache_organizer
 
         logging.info("the cache folder is set to {}".format(self.cache_folder))
+
+        self.request_callback = request_callback
 
         self.cache_warning()
 
@@ -161,6 +166,10 @@ class NicedUrlRequest():
             if remaining_sleep > 0:
                 logging.info("sleeping")
                 time.sleep(remaining_sleep)
+
+            if self.request_callback is not None:
+                logging.info("call request callback")
+                self.request_callback()
 
             logging.info("perform request")
             self.update_time()

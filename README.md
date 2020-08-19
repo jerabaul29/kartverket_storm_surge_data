@@ -4,7 +4,7 @@ Interact with storm surge data from the kartverket API. This implements a simple
 
 ## Installation
 
-The package should be used with Python 3.7 or higher, on Linux platforms. It has been developed and tested on Ubuntu 20.04. Platforms other than Linux may fail to run the package.
+The package should be used with Python 3.7 or higher, on Linux platforms. It has been developed and tested on Ubuntu 20.04. Platforms other than Linux may fail to run the package. Tests can be run with pytest, i.e. from this location in terminal: ```pytest -v .```. They may take quite a while, as a full water level dataset will be built and checked in the process.
 
 To install: add to your pythonpath. For example on my machine, this folder is at location ```/home/jrmet/Desktop/Git/kartverket_storm_surge_data/```, and the command to add to my ```.bashrc``` is:
 
@@ -37,7 +37,8 @@ Please use the Github issue tracker at ```https://github.com/jerabaul29/kartverk
 
 ## Notes
 
-This small module was developed in the context of the 'MachineOcean' project, Norwegian Meteorological Institute: ```https://machineocean.met.no/```.
+- This small module was developed in the context of the 'MachineOcean' project, Norwegian Meteorological Institute: ```https://machineocean.met.no/```.
+- Kartverket does some maintenance on the last Thursday of each month, and it would be wise to avoid querying if possible then. A warning will be issued if any API request is performed on the last Thursday of a month.
 
 ## Example of resuts
 
