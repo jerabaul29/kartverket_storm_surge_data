@@ -224,13 +224,13 @@ class DatasetGenerator():
         with nc4.Dataset(nc4_path, "w", format="NETCDF4") as nc4_fh:
             nc4_fh.set_auto_mask(False)
 
-            description_string = "Storm surge dataset from the Norwegian coast," +\
-                                 "built from the data obtained from kartverket web API," +\
-                                 "using the code at:" +\
-                                 "MachineOcean-WP12/storm_surge/learn_error/prepare_data/prepare_data.py" +\
-                                 "generated on {}".format(datetime.datetime.now().isoformat()[:10]) +\
-                                 "in all the following, except stated otherwise, CD (chart datum) ref level" +\
-                                 "is used, units are cm, and all timestamps are UTC."
+            description_string = "Storm surge dataset from the Norwegian coast, " +\
+                                 "built from the data obtained from kartverket web API, " +\
+                                 "using the code at: " +\
+                                 "MachineOcean-WP12/storm_surge/learn_error/prepare_data/prepare_data.py " +\
+                                 "generated on {} ".format(datetime.datetime.now().isoformat()[:10]) +\
+                                 "in all the following, except stated otherwise, CD (chart datum) ref level " +\
+                                 "is used, units are cm, and all timestamps are UTC. "
 
             nc4_fh.Conventions = "CF-X.X"
             nc4_fh.title = "storm surge from kartverket API"
@@ -262,22 +262,22 @@ class DatasetGenerator():
             timestamps.description = "common time base for all data"
             timestamps.units = "POSIX timestamp"
 
-            observation.description = "water level observation at each station over the time base,"\
+            observation.description = "water level observation at each station over the time base, "\
                 "CD (Chart Datum) reference level"
             observation.units = "cm, fill value: 1.0e37"
             observation.standard_name = "observed_sea_surface_height_at_chartdatum"
 
-            prediction.description = "water level prediction by Kartverket," +\
-                "using only astronomic tide effects, at each station over the time base,"\
+            prediction.description = "water level prediction by Kartverket, " +\
+                "using only astronomic tide effects, at each station over the time base, "\
                 "CD (Chart Datum) reference level"
             prediction.units = "cm, fill value: 1.0e37"
             prediction.standard_name = "sea_surface_height_amplitude_due_to_earth_tide"
 
-            timestamp_start.description = "first timestamp for which data are available," +\
+            timestamp_start.description = "first timestamp for which data are available, " +\
                 "for each station; there may be holes though"
             timestamp_start.units = "POSIX timestamp"
 
-            timestamp_end.description = "last timestamp for which data are available," +\
+            timestamp_end.description = "last timestamp for which data are available, " +\
                 "for each station; there may be holes though"
             timestamp_end.units = "POSIX timestamp"
 
