@@ -180,8 +180,10 @@ class DatasetAccessor():
             - datetime_end: the end of the plot
         """
 
+        print("start netCDF4 data query...")
         datetime_timestamps, observation, prediction = self.get_data(station_id, datetime_start, datetime_end)
 
+        print("start plotting...")
         plt.figure()
 
         plt.plot(datetime_timestamps, observation, label="obs")
