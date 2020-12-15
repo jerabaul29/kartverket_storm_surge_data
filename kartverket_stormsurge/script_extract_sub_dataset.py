@@ -51,6 +51,16 @@ def generate_sub_dataset(path_to_nc4_input, path_to_nc4_output,
 path_to_nc4_input = "./full_size_data_kartverket_storm_surge.nc4"
 station_id = "BGO"
 
+# a dataset with both valid and invalid data
+path_to_nc4_output = "./dataset_observations_contains_invalid.nc4"
+datetime_start = datetime.datetime(1990, 1, 1, 0, 0, tzinfo=pytz.utc)
+datetime_end = datetime.datetime(1995, 1, 1, 0, 0, tzinfo=pytz.utc)
+
+generate_sub_dataset(path_to_nc4_input, path_to_nc4_output,
+                     station_id,
+                     datetime_start, datetime_end,
+                     display=True)
+
 # a dataset early
 path_to_nc4_output = "./dataset_observations_before.nc4"
 datetime_start = datetime.datetime(1991, 7, 1, 0, 0, tzinfo=pytz.utc)
