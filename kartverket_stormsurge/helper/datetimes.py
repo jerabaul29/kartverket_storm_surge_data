@@ -3,12 +3,17 @@ import pytz
 
 from kartverket_stormsurge.helper.raise_assert import ras
 
+
 def assert_is_utc_datetime(date_in):
     """Assert that date_in is an UTC datetime."""
     ras(isinstance(date_in, datetime.datetime))
 
-    if not date_in.tzinfo == pytz.utc:
+    if not (date_in.tzinfo == pytz.utc or
+            date_in.tzinfo == datetime.timezone.utc):
         raise Exception("not utc!")
+
+    if date_in.tzinfo == pytz.utc:
+        print("prefer using datetime.timezone.utc to pytz.utc")
 
 
 def assert_10min_multiple(date_in):
