@@ -9,3 +9,6 @@ __pycache__/
 **/crrt_working_script.py
 
 *.nc4
+
+*.swp
+*~
