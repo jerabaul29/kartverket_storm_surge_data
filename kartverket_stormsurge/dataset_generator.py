@@ -90,9 +90,13 @@ class DatasetGenerator():
         station_ids = sorted(list(dict_all_stations_data.keys()))
 
         for crrt_station in station_ids:
-            dict_timebouds = self.get_individual_station_time_bounds(crrt_station)
-            dict_all_stations_data[crrt_station]["first_datetime"] = dict_timebouds["first"]
-            dict_all_stations_data[crrt_station]["last_datetime"] = dict_timebouds["last"]
+            try:
+                dict_timebouds = self.get_individual_station_time_bounds(crrt_station)
+                dict_all_stations_data[crrt_station]["first_datetime"] = dict_timebouds["first"]
+                dict_all_stations_data[crrt_station]["last_datetime"] = dict_timebouds["last"]
+            except Exception as err:
+                print(f"ERR got error {err}, drop station {crrt_station}")
+                dict_all_stations_data.pop(crrt_station)
 
         return(dict_all_stations_data)
 

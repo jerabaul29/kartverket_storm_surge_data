@@ -13,7 +13,8 @@ def assert_is_utc_datetime(date_in):
         raise Exception("not utc!")
 
     if date_in.tzinfo == pytz.utc:
-        print("prefer using datetime.timezone.utc to pytz.utc")
+        # print("prefer using datetime.timezone.utc to pytz.utc")
+        pass
 
 
 def assert_10min_multiple(date_in):
